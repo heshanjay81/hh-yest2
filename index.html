@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Full Page Calendar</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+        overflow: hidden;
+      }
+      .video-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        width: 90%;
+        max-width: 900px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 20px;
+      }
+      .calendar-header,
+      .day {
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      .day {
+        background-color: #ffffff;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+      .today {
+        background-color: #ffd700;
+      }
+      .available {
+        background-color: #90ee90; /* Light green */
+      }
+      .booked {
+        background-color: #ff6347; /* Tomato red */
+        color: white;
+      }
+
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .calendar {
+          gap: 3px;
+        }
+        .calendar-header,
+        .day {
+          padding: 8px;
+          font-size: 12px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .calendar {
+          gap: 2px;
+        }
+        .calendar-header,
+        .day {
+          padding: 6px;
+          font-size: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <video class="video-background" autoplay muted loop>
+      <source src="your-video.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <div id="calendar" class="calendar"></div>
+
+    <script>
+      const calendar = document.getElementById("calendar");
+      const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const date = new Date();
+      const currentMonth = date.getMonth();
+      const currentYear = date.getFullYear();
+      const today = date.getDate();
+
+      // Arrays to store available and booked days (format: day numbers)
+      const availableDays = [5, 10, 15, 20];
+      const bookedDays = [7, 12, 18, 25];
+
+      function createCalendar(year, month) {
+        // Get the first day of the month
+        const firstDay = new Date(year, month, 1).getDay();
+        // Get the number of days in the month
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Add the days of the week headers
+        daysOfWeek.forEach((day) => {
+          const header = document.createElement("div");
+          header.classList.add("calendar-header");
+          header.textContent = day;
+          calendar.appendChild(header);
+        });
+
+        // Create empty spaces for days before the first day of the month
+        for (let i = 0; i < firstDay; i++) {
+          const emptyCell = document.createElement("div");
+          emptyCell.classList.add("day");
+          calendar.appendChild(emptyCell);
+        }
+
+        // Fill in the days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayCell = document.createElement("div");
+          dayCell.classList.add("day");
+
+          if (day === today && month === currentMonth && year === currentYear) {
+            dayCell.classList.add("today");
+          }
+
+          if (availableDays.includes(day)) {
+            dayCell.classList.add("available");
+            dayCell.textContent = `${day} (Available)`;
+          } else if (bookedDays.includes(day)) {
+            dayCell.classList.add("booked");
+            dayCell.textContent = `${day} (Booked)`;
+          } else {
+            dayCell.textContent = day;
+          }
+
+          calendar.appendChild(dayCell);
+        }
+      }
+
+      createCalendar(currentYear, currentMonth);
+    </script>
+  </body>
+</html>
